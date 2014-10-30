@@ -1,6 +1,6 @@
 import logging
 logging.basicConfig(filename='/tmp/persistent_log.log',level=logging.DEBUG)
-
+logging.debug('loading module')
 
 import persistent
 import transaction
