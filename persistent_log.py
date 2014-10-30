@@ -20,6 +20,9 @@ class PersistentLog(object):
         if not hasattr(self.root,'log_map'):
             self.root.log_map=BTrees.OOBTree.BTree()
 
+    def get_log_days(self):
+        return self.root.log.keys()
+
     def log_start(self,object_to_log):
         date_str=str(datetime.date.today())
         now=datetime.datetime.now()
