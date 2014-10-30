@@ -1,21 +1,6 @@
 import logging
+logging.basicConfig(filename='/tmp/persistent_log.log',level=logging.DEBUG)
 
-# create logger with 'spam_application'
-logger = logging.getLogger('ZODB.FileStorage')
-logger.setLevel(logging.DEBUG)
-# create file handler which logs even debug messages
-fh = logging.FileHandler('/tmp/zodb.log')
-fh.setLevel(logging.DEBUG)
-# create console handler with a higher log level
-ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
-# create formatter and add it to the handlers
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-# add the handlers to the logger
-logger.addHandler(fh)
-logger.addHandler(ch)
 
 import persistent
 import transaction
@@ -46,6 +31,7 @@ class PersistentLog(object):
             yield self.root.log_map[x]
 
     def log_start(self,object_to_log):
+        logging.debug('start start')
         date_str=str(datetime.date.today())
         now=datetime.datetime.now()
         if date_str not in self.root.log:
@@ -54,6 +40,7 @@ class PersistentLog(object):
         self.root.log[date_str].append(txid)
         self.root.log_map[txid]=persistent.mapping.PersistentMapping({'object':object_to_log,'start_time':now})
         transaction.commit()
+        logging.debug('start stop')
         return txid
 
     def get_txid(self):
@@ -65,12 +52,14 @@ class PersistentLog(object):
         return txid
 
     def log_stop(self,txid):
+        logging.debug('stop start')
         if self.root.log_map.get(txid):
             now=datetime.datetime.now()
             elapsed=(now-self.root.log_map[txid]['start_time']).total_seconds()
             self.root.log_map[txid]['stop_time']=now
             self.root.log_map[txid]['elapsed']=elapsed
             transaction.commit()
+        logging.debug('stop stop')
 
 
     def close(self):
