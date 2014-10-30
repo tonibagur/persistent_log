@@ -23,6 +23,10 @@ class PersistentLog(object):
     def get_log_days(self):
         return self.root.log.keys()
 
+    def iter_logs_from_day(self,day):
+        for x in self.root.log[day]:
+            yield self.root.log_map[x]
+
     def log_start(self,object_to_log):
         date_str=str(datetime.date.today())
         now=datetime.datetime.now()
