@@ -1,6 +1,7 @@
-import logging
-logging.basicConfig(filename='/tmp/persistent_log.log',level=logging.DEBUG)
-logging.debug('loading module')
+import logging as log
+log.basicConfig(filename='/tmp/persistent_log.log',level=log.DEBUG)
+logger=log.getLogger('persistent_log')
+logger.debug('loading module')
 
 import persistent
 import transaction
@@ -31,7 +32,7 @@ class PersistentLog(object):
             yield self.root.log_map[x]
 
     def log_start(self,object_to_log):
-        logging.debug('start start')
+        logger.debug('start start')
         date_str=str(datetime.date.today())
         now=datetime.datetime.now()
         if date_str not in self.root.log:
@@ -40,7 +41,7 @@ class PersistentLog(object):
         self.root.log[date_str].append(txid)
         self.root.log_map[txid]=persistent.mapping.PersistentMapping({'object':object_to_log,'start_time':now})
         transaction.commit()
-        logging.debug('start stop')
+        logger.debug('start stop')
         return txid
 
     def get_txid(self):
@@ -52,14 +53,14 @@ class PersistentLog(object):
         return txid
 
     def log_stop(self,txid):
-        logging.debug('stop start')
+        logger.debug('stop start')
         if self.root.log_map.get(txid):
             now=datetime.datetime.now()
             elapsed=(now-self.root.log_map[txid]['start_time']).total_seconds()
             self.root.log_map[txid]['stop_time']=now
             self.root.log_map[txid]['elapsed']=elapsed
             transaction.commit()
-        logging.debug('stop stop')
+        logger.debug('stop stop')
 
 
     def close(self):
