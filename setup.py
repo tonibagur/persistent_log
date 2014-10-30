@@ -8,5 +8,5 @@ setup(name='PersistentLog',
       author='Toni Bagur',
       author_email='toni.bagur@coneptum.com',
       url='http://www.coneptum.com',
-      py_modules=['persistent_log',],
+      py_modules=['persistent_log','persistent_log_report'],
      )
