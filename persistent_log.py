@@ -22,7 +22,7 @@ class PersistentLog(object):
         self.table = 'Logs'
         self.db_path = db_path
         conn = sqlite3.connect(self.db_path)
-        query = 'create table if not exists ' + self.table + '(id INTEGER PRIMARY KEY AUTOINCREMENT, pickle BLOB, date TEXT, dateTime_start TEXT, dateTime_stop TEXT, elapsed INTEGER)'
+        query = 'create table if not exists ' + self.table + '(id INTEGER PRIMARY KEY AUTOINCREMENT, pickle BLOB, date TEXT, dateTime_start TEXT, dateTime_stop TEXT, elapsed REAL)'
         conn.execute(query)
         query = 'create index if not exists date_index on ' + self.table + '(dateTime_start)'
         conn.commit()
