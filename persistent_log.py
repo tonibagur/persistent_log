@@ -73,19 +73,19 @@ class PersistentLog(object):
         conn.close()
         return dateTime_start
 
-    def calculate_seconds(self, dateTime_start, dateTime_stop):
+    def calculate_milliseconds(self, dateTime_start, dateTime_stop):
         d1 = re.sub('-| ', ':', dateTime_start).split(':')
         d2 = re.sub('-| ', ':', dateTime_stop).split(':')
         d_start = datetime.datetime(int(d1[0]), int(d1[1]), int(d1[2]), int(d1[3]), int(d1[4]), int(d1[5]))
         d_stop = datetime.datetime(int(d2[0]), int(d2[1]),int(d2[2]), int(d2[3]), int(d2[4]), int(d2[5]))
-        seconds = d_stop - d_start
-        return seconds.seconds
+        total = d_stop - d_start
+        return total.total_seconds()*1000
 
     def log_stop(self,id):
         logger.debug('stop start')
         dateTime_stop = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         dateTime_start = self.get_datetime_start(id)
-        elapsed = self.calculate_seconds(dateTime_start, dateTime_stop)
+        elapsed = self.calculate_milliseconds(dateTime_start, dateTime_stop)
         conn = sqlite3.connect(self.db_path)
         query = 'update ' + self.table + ' set dateTime_stop=\'' + dateTime_stop +'\', elapsed=' + str(elapsed) + ' where id=' + str(id)
         conn.execute(query)
